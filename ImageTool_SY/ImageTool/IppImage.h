@@ -34,12 +34,17 @@ public:
 
 	// 픽셀 값 설정
 	template<typename U> void Convert(const IppImage<U>& img, bool use_limit = false);
+	// 템플릿 전문화 추가 (함수 재정의와 유사.) specialization?
+	void Convert(const IppImage<RGBBYTE>& img);
+
 
 	// 영상 정보 반환
 	int     GetWidth()    const { return width; }
 	int     GetHeight()   const { return height; }
 	int     GetSize()     const { return width * height; }
 	bool    IsValid()     const { return (pixels != NULL); }
+
+	
 };
 
 template<typename T>
@@ -157,4 +162,21 @@ template<typename T>
 inline T limit(const T& value)
 {
 	return ((value > 255) ? 255 : ((value < 0) ? 0 : value));
+}
+
+
+
+// 트루컬러 -> 그레이스케일
+#define RGB2GRAY(r,g,b) (0.299*(r) + 0.587*(g) + 0.114*(b))
+template<typename T>
+void IppImage<T>::Convert(const IppImage<RGBBYTE>& img)
+{
+	CreateImage(img.GetWidth(), img.GetHeight());
+	
+	int size = GetSize();
+	T* p1 = GetPixels();
+	RGBBYTE* p2 = img.GetPixels();
+
+	for (int i = 0; i < size; i++)
+		p1[i] = static_cast<T>(RGB2GRAY(p2[i].r, p2[i].g, p2[i].b));
 }

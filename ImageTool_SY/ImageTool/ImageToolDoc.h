@@ -80,4 +80,6 @@ public:
 	afx_msg void OnEdgeCanny();
 	afx_msg void OnHoughLine();
 	afx_msg void OnHarrisCorner();
+	afx_msg void OnColorGrayscale();
+	afx_msg void OnColorEdge();
 };

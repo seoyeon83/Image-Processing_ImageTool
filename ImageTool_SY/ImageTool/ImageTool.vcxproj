@@ -200,6 +200,7 @@
     <ClInclude Include="IppConvert.h" />
     <ClInclude Include="IppDib.h" />
     <ClInclude Include="IppImage.h" />
+    <ClInclude Include="IppImage\IppColor.h" />
     <ClInclude Include="IppImage\IppEnhance.h" />
     <ClInclude Include="IppImage\IppFeature.h" />
     <ClInclude Include="IppImage\IppFilter.h" />
@@ -227,6 +228,7 @@
     <ClCompile Include="ImageToolView.cpp" />
     <ClCompile Include="IppConvert.cpp" />
     <ClCompile Include="IppDib.cpp" />
+    <ClCompile Include="IppImage\IppColor.cpp" />
     <ClCompile Include="IppImage\IppEnhance.cpp" />
     <ClCompile Include="IppImage\IppFeature.cpp" />
     <ClCompile Include="IppImage\IppFilter.cpp" />

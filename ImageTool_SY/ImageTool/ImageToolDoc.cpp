@@ -35,6 +35,7 @@
 #include <algorithm>
 #include <functional>
 #include "CHarrisCornerDlg.h"
+#include "IppImage/IppColor.h" 
 
 // CImageToolDoc
 
@@ -71,6 +72,8 @@ BEGIN_MESSAGE_MAP(CImageToolDoc, CDocument)
 	ON_COMMAND(ID_EDGE_CANNY, &CImageToolDoc::OnEdgeCanny)
 	ON_COMMAND(ID_HOUGH_LINE, &CImageToolDoc::OnHoughLine)
 	ON_COMMAND(ID_HARRIS_CORNER, &CImageToolDoc::OnHarrisCorner)
+	ON_COMMAND(ID_COLOR_GRAYSCALE, &CImageToolDoc::OnColorGrayscale)
+	ON_COMMAND(ID_COLOR_EDGE, &CImageToolDoc::OnColorEdge)
 END_MESSAGE_MAP()
 
 
@@ -213,7 +216,7 @@ BOOL CImageToolDoc::OnSaveDocument(LPCTSTR lpszPathName)
 void CImageToolDoc::OnImageInverse()
 {
 	// TODO: 여기에 명령 처리기 코드를 추가합니다.
-	IppByteImage img;
+	/*IppByteImage img;
 	IppDibToImage(m_Dib, img);
 
 	IppInverse(img);
@@ -221,7 +224,34 @@ void CImageToolDoc::OnImageInverse()
 	IppDib dib;
 	IppImageToDib(img, dib);
 
-	AfxNewBitmap(dib);
+	AfxNewBitmap(dib);*/
+
+	if (m_Dib.GetBitCount() == 24) {
+		IppRgbImage img;
+
+		IppDibToImage(m_Dib, img);
+
+		IppInverse(img);
+
+		IppDib dib;
+
+		IppImageToDib(img, dib);
+
+		AfxNewBitmap(dib);
+	}
+	else if (m_Dib.GetBitCount() == 8) {
+		IppByteImage img;
+
+		IppDibToImage(m_Dib, img);
+
+		IppInverse(img);
+
+		IppDib dib;
+
+		IppImageToDib(img, dib);
+
+		AfxNewBitmap(dib);
+	}
 }
 
 
@@ -290,9 +320,7 @@ void CImageToolDoc::OnHistoStretching()
 
 void CImageToolDoc::OnHistoEqualization()
 {
-	// TODO: 여기에 명령 처리기 코드를 추가합니다.
-	// TODO: 여기에 명령 처리기 코드를 추가합니다.
-	IppByteImage img;
+	/*IppByteImage img;
 	IppDibToImage(m_Dib, img);
 
 	IppHistogramEqualizaiton(img);
@@ -300,7 +328,33 @@ void CImageToolDoc::OnHistoEqualization()
 	IppDib dib;
 	IppImageToDib(img, dib);
 
-	AfxNewBitmap(dib);
+	AfxNewBitmap(dib);*/
+
+	if (m_Dib.GetBitCount() == 8) {//그레이스케일영상 히스토그램 균등화
+		IppByteImage img;
+		IppDibToImage(m_Dib, img);
+
+		IppHistogramEqualizaiton(img);
+
+		IppDib dib;
+		IppImageToDib(img, dib);
+		AfxNewBitmap(dib);
+	}
+
+	else if (m_Dib.GetBitCount() == 24) {//트루컬러영상 히스토그램 균등화
+		IppRgbImage imgColor;
+		IppDibToImage(m_Dib, imgColor);
+		IppByteImage imgY, imgU, imgV;
+
+		IppColorSplitYUV(imgColor, imgY, imgU, imgV);
+		IppHistogramEqualizaiton(imgY);
+		IppRgbImage imgRes;
+		IppColorCombineYUV(imgY, imgU, imgV, imgRes);
+
+		IppDib dib;
+		IppImageToDib(imgRes, dib);
+		AfxNewBitmap(dib);
+	}
 }
 
 
@@ -755,4 +809,36 @@ void CImageToolDoc::OnHarrisCorner()
 
 		AfxNewBitmap(dib);
 	}
+}
+
+
+void CImageToolDoc::OnColorGrayscale()
+{
+	IppRgbImage imgColor;
+
+	IppDibToImage(m_Dib, imgColor);
+
+	IppByteImage imgGray;
+
+	imgGray.Convert(imgColor);
+
+	IppDib dib;
+	IppImageToDib(imgGray, dib);
+
+	AfxNewBitmap(dib);
+}
+
+
+void CImageToolDoc::OnColorEdge()
+{
+	IppRgbImage imgColor;
+	IppDibToImage(m_Dib, imgColor);
+
+	IppByteImage imgEdge;
+	IppColorEdge(imgColor, imgEdge);
+
+	IppDib dib;
+	IppImageToDib(imgEdge, dib);
+
+	AfxNewBitmap(dib);
 }
