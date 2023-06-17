@@ -28,9 +28,9 @@ void IppEdgeCanny(IppByteImage& imgSrc, IppByteImage& imgEdge, float sigma, floa
 class IppLineParam
 {
 public:
-	double rho;
-	double ang;
-	int vote; //축적배열에서 누적된 값
+	double rho;  // p
+	double ang;  // theta
+	int vote;    //축적배열에서 누적된 값
 public:
 	IppLineParam() :rho(0), ang(0), vote(0) {}
 	IppLineParam(double r, double a, int v) :rho(r), ang(a), vote(v) {}
